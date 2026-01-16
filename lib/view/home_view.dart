@@ -66,49 +66,9 @@ class _HomeViewState extends State<HomeView> {
               },
             );
           },
-          // child: IconButton(
-          //   icon: Icon(
-          //     theme.isDark
-          //         ? Icons.dark_mode
-          //         : Icons.light_mode,
-          //     size: 25
-          //   ),
-          //   color: theme.isDark ? Colors.black : Colors.white,
-          //   onPressed: () {
-          //     theme.toggleTheme();
-          //   },
-          // ),
         ),
 
         actions:  [
-          // Consumer<ThemeProvider>(
-          //   builder: (context, value, child) {
-          //     return IconButton(
-          //       icon: Icon(
-          //           value.isDark
-          //               ? Icons.dark_mode
-          //               : Icons.light_mode,
-          //           size: 25
-          //       ),
-          //       color: value.isDark ? Colors.black : Colors.white,
-          //       onPressed: () {
-          //         value.setTheme();
-          //       },
-          //     );
-          //   },
-          //   // child: IconButton(
-          //   //   icon: Icon(
-          //   //     theme.isDark
-          //   //         ? Icons.dark_mode
-          //   //         : Icons.light_mode,
-          //   //     size: 25
-          //   //   ),
-          //   //   color: theme.isDark ? Colors.black : Colors.white,
-          //   //   onPressed: () {
-          //   //     theme.toggleTheme();
-          //   //   },
-          //   // ),
-          // ),
           IconButton(
            // onPressed: logoutClass.showLogoutDialog(context),
             onPressed: () {

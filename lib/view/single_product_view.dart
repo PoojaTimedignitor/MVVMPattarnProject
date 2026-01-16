@@ -120,38 +120,6 @@ class SingleProductView extends StatelessWidget {
         }
     );
 
-
-    // bool? confirm = await showDialog<bool>(
-    //     context: context,
-    //     builder: (context){
-    //       return AlertDialog(
-    //         title:  const Text('Delete Product'),
-    //         content: const Text('Are you sure want to delete product'),
-    //         actions: [
-    //           TextButton(onPressed: (){
-    //             Navigator.pop(context, false);
-    //             }, child: const Text('Cancel')),
-    //
-    //           TextButton(onPressed: (){
-    //             Navigator.pop(context, true);
-    //             }, child: const Text('Yes')),
-    //         ],
-    //       );
-    //     }
-    // );
-    //
-    // if(confirm == true){
-    //   bool isDeleted = await provider.fetchDeleteData(productId);
-    //   log('Deleted dataaaa : $isDeleted');
-    //   if(isDeleted){
-    //     Utils().showSnackBar(context, 'Product Deleted Successfully', type: MessageType.success);
-    //     Navigator.pop(context);
-    //   }else{
-    //     Utils().showSnackBar(context, 'Product Deleted Failed', type: MessageType.error);
-    //     Navigator.pop(context);
-    //   }
-    // }
-
   }
 
 
