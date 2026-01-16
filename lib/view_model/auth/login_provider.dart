@@ -89,9 +89,9 @@ class LoginProvider extends ChangeNotifier {
     // if (context.mounted) {
     //   final tokenStore = Provider.of<TokenStoreProvider>(context, listen: false);
     //   await tokenStore.saveToken(
-    //     token: result?['accessToken'],
-    //     firstName: result?['firstName'],
-    //     lastName: result?['lastName'],
+    //     token: result['accessToken'],
+    //     firstName: result['firstName'],
+    //     lastName: result['lastName'],
     //   );
     //   log('User data stored successfully : $tokenStore');
     // }

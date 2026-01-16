@@ -6,13 +6,17 @@ import 'package:clean_mvvm_pattern/view_model/auth/login_provider.dart';
 import 'package:clean_mvvm_pattern/view_model/auth/register_provider.dart';
 import 'package:clean_mvvm_pattern/view_model/auth/token_store_provider.dart';
 import 'package:clean_mvvm_pattern/view_model/product_data_view_model.dart';
+import 'package:clean_mvvm_pattern/view_model/sql_db_provider.dart';
 import 'package:clean_mvvm_pattern/view_model/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 
 
-void main() {
+void main()async{
   runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
   DioClient.setupInterceptors();
 }
 
@@ -28,17 +32,15 @@ class MyApp extends StatelessWidget {
            ChangeNotifierProvider(create: (_) => TokenStoreProvider()),
            ChangeNotifierProvider(create: (_) => ProductDataProvider()),
            ChangeNotifierProvider(create: (_) => ThemeProvider()),
+           ChangeNotifierProvider(create: (_) => SqlDbProvider()),
         ],
       child:  Consumer<ThemeProvider>(
-        builder: (context, value, _) {
-          final themeChanger = Provider.of<ThemeProvider>(context, listen: false);
+        builder: (context, themeChanger, _) {
+         // final themeChanger = Provider.of<ThemeProvider>(context, listen: false);
           return  MaterialApp(
             themeMode: themeChanger.themeMode,
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
-            // darkTheme: ThemeData(
-            //   brightness: Brightness.dark
-            // ),
             debugShowCheckedModeBanner: false,
             initialRoute: RouteName.splash,
             onGenerateRoute: AppRoute.generateRoute,

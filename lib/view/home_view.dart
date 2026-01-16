@@ -5,6 +5,7 @@ import 'package:clean_mvvm_pattern/view/search_product_view.dart';
 import 'package:clean_mvvm_pattern/view_model/auth/login_provider.dart';
 import 'package:clean_mvvm_pattern/view_model/auth/token_store_provider.dart';
 import 'package:flutter/material.dart';
+import '../sql_db/UserScreen.dart';
 import '../utils/custom/show_dialog.dart';
 import '../utils/custom/theme_app_color.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,8 @@ class _HomeViewState extends State<HomeView> {
   final List<Widget> screens = [
     const GetProductList(),
     const SingleProductView(),
-    const CreateProductView(),
+    const UserScreen(),
+    // const CreateProductView(),
     const SearchProductView(),
   ];
   LogoutClass logoutClass = LogoutClass();
@@ -55,12 +57,12 @@ class _HomeViewState extends State<HomeView> {
           builder: (context, value, child) {
             return IconButton(
               icon: Icon(
-                  value.isDark
+                  value.isDarkMode
                       ? Icons.dark_mode
                       : Icons.light_mode,
                   size: 25
               ),
-              color: value.isDark ? Colors.black : Colors.white,
+              color: value.isDarkMode ? Colors.black : Colors.white,
               onPressed: () {
                 value.setTheme();
               },
@@ -74,7 +76,6 @@ class _HomeViewState extends State<HomeView> {
             onPressed: () {
               logoutClass.showLogoutDialog(context);
             },
-
             icon: const Icon(Icons.logout),
           ),
           const SizedBox(width: 10,)
