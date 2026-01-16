@@ -6,22 +6,22 @@ import '../model/user_model.dart';
 
 class SqlDbProvider extends ChangeNotifier{
 
-  List<UserModel> products = [];
+  List<UserModel> users = [];
   bool isLoading = false;
 
   Future<void> fetchUser()async{
     isLoading = true;
     notifyListeners();
 
-    products  =  await DBHelper.instance.getUsers();
+    users  =  await DBHelper.instance.getUsers();
 
     isLoading = false;
     notifyListeners();
   }
 
 
-   Future<void> addUser(UserModel product)async{
-    await DBHelper.instance.addUser(product);
+   Future<void> addUser(UserModel user)async{
+    await DBHelper.instance.addUser(user);
     fetchUser();
    }
 

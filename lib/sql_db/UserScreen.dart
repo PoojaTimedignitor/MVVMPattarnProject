@@ -38,9 +38,9 @@ class _UserScreenState extends State<UserScreen> {
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-        itemCount: provider.products.length,
+        itemCount: provider.users.length,
         itemBuilder: (context, index) {
-          final user = provider.products[index];
+          final user = provider.users[index];
           return ListTile(
             title: Text(user.name ?? ''),
             subtitle: Text(user.email ?? ''),

@@ -9,7 +9,6 @@ class UserModel {
     required this.email,
   });
 
-  // Convert object → Map (for database)
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -18,7 +17,6 @@ class UserModel {
     };
   }
 
-  // Convert Map → object (from database)
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'],
