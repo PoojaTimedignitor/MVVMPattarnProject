@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         providers: [
            ChangeNotifierProvider(create: (_) => LoginProvider()),
            ChangeNotifierProvider(create: (_) => RegisterProvider()),
-           ChangeNotifierProvider(create: (_) => TokenStoreProvider()),
+          // ChangeNotifierProvider(create: (_) => TokenStoreProvider()),
            ChangeNotifierProvider(create: (_) => ProductDataProvider()),
            ChangeNotifierProvider(create: (_) => ThemeProvider()),
            ChangeNotifierProvider(create: (_) => SqlDbProvider()),

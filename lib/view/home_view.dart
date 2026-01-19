@@ -209,7 +209,7 @@ class LogoutClass {
       cancelText: 'Cancel',
       onConfirm: () async {
         final tokenStore =
-        Provider.of<TokenStoreProvider>(context, listen: false);
+        Provider.of<TokenStoreGetStorage>(context, listen: false);
 
         log('Clear Token : $tokenStore');
         await tokenStore.clearToken();
