@@ -67,7 +67,7 @@ class LoginProvider extends ChangeNotifier {
     final result = await apiDio.login(
     // final result = await api.postLogin(
        username : usernameController.text.trim(),
-       password:  passwordController.text.trim()
+       password : passwordController.text.trim()
     );
     setLoading(false);
     log('Response Login : $result');

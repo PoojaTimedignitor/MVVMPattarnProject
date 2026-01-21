@@ -23,19 +23,12 @@ class _SplashViewState extends State<SplashView> {
   void checkAuthentication()async{
   //  final tokenStore = Provider.of<TokenStoreProvider>(context, listen: false);
     final tokenStore = TokenStoreGetStorage();
-    final token = GetStorage().read('accessToken');
+   // final token = GetStorage().read('accessToken');
 
     // final token = await tokenStore.getToken();
-   // String? token = tokenStore.token;
+    String? token = tokenStore.token;
     print('Token  Store SPlash: $token');
     await Future.delayed(Duration.zero);
-
-    // if (tokenStore.isLoggedIn) {
-    //   Navigator.pushNamedAndRemoveUntil(
-    //     context,
-    //     RouteName.home,
-    //         (route) => false,
-    //   );
 
     if(token != null && token.isNotEmpty){
       Navigator.pushNamedAndRemoveUntil(context, RouteName.home, (route) => false);
