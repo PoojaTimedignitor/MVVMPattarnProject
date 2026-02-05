@@ -21,8 +21,8 @@ class _SplashViewState extends State<SplashView> {
 
   void checkAuthentication()async{
     final tokenStore = Provider.of<TokenStoreProvider>(context, listen: false);
-   // final token = await tokenStore.getToken();
-    String? token = await tokenStore.getToken();
+    String? token = TokenStoreProvider.getToken();
+    // String? token = await tokenStore.getToken();
     print('Token  Store SPlash: $token');
     await Future.delayed(Duration.zero);
 

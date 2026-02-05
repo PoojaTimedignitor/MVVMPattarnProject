@@ -14,10 +14,10 @@ import 'package:provider/provider.dart';
 
 
 void main()async{
-  runApp(const MyApp());
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   DioClient.setupInterceptors();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

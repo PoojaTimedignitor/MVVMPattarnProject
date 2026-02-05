@@ -30,8 +30,8 @@ class _HomeViewState extends State<HomeView> {
   final List<Widget> screens = [
     const GetProductList(),
     const SingleProductView(),
-    const UserScreen(),
-    // const CreateProductView(),
+    //const UserScreen(),
+     const CreateProductView(),
     const SearchProductView(),
   ];
   LogoutClass logoutClass = LogoutClass();
@@ -212,7 +212,8 @@ class LogoutClass {
         Provider.of<TokenStoreProvider>(context, listen: false);
 
         log('Clear Token : $tokenStore');
-        await tokenStore.clearToken();
+        await TokenStoreProvider.clearToken();
+        // await tokenStore.clearToken();
 
         if (context.mounted) {
           Navigator.pushNamedAndRemoveUntil(

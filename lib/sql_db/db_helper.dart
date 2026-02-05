@@ -1,7 +1,9 @@
 
+import 'dart:developer';
+import 'dart:io';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../model/user_model.dart';
 
 class DBHelper {
@@ -13,11 +15,15 @@ class DBHelper {
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDB();
+    log('Database : $_database');
     return _database!;
   }
 
   Future<Database> _initDB() async {
-    final path = join(await getDatabasesPath(), "app_database.db");
+    Directory directory = await getApplicationDocumentsDirectory();                      /// new
+    // final directoryPath  = await getDatabasesPath();     ///old
+    final path = join(directory.path, "app_database.db");
+    log('Path : $path');
     return await openDatabase(
       path,
       version: 1,
@@ -43,11 +49,13 @@ class DBHelper {
   Future<List<UserModel>> getUsers() async {
     final db = await database;
     final result = await db.query('users');
+    log('Get User : $result');
     return result.map((e) => UserModel.fromMap(e)).toList();
   }
 
   Future<int> deleteUser(int id) async {
     final db = await database;
+    log('delete User : $db');
     return await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 }

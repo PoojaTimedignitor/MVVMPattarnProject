@@ -6,7 +6,6 @@ import 'package:clean_mvvm_pattern/view/auth/login_view.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-
 import '../model/get_all_product_model.dart';
 import '../model/me_model.dart';
 import '../model/me_model.dart';
@@ -77,7 +76,8 @@ class DioClient {
         String url = ApiEndPont.me;
 
         final token = Provider.of<TokenStoreProvider>(context, listen: false);
-          final accessToken = await token.getToken();
+          final accessToken = await TokenStoreProvider.getToken();
+          // final accessToken = await token.getToken();
 
         if(accessToken == null){
           log('AccessToken is missing');
@@ -107,7 +107,8 @@ class DioClient {
         }on DioException catch(e){
           if(e.response?.statusCode == 401){
             debugPrint("Token - Token expired Dio");
-            await token.clearToken();
+            await TokenStoreProvider.clearToken();
+            // await token.clearToken();
             if(context.mounted){
               Navigator.pushNamedAndRemoveUntil(context, RouteName.login, (route) => false);
             }
