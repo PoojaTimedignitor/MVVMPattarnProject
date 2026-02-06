@@ -8,6 +8,8 @@ import 'package:clean_mvvm_pattern/view_model/auth/token_store_provider.dart';
 import 'package:clean_mvvm_pattern/view_model/product_data_view_model.dart';
 import 'package:clean_mvvm_pattern/view_model/sql_db_provider.dart';
 import 'package:clean_mvvm_pattern/view_model/theme_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +19,10 @@ void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   DioClient.setupInterceptors();
+  await Firebase.initializeApp();
+  FirebaseFirestore.instance.settings = const Settings(                                                       /// offline data store
+    persistenceEnabled: true,
+  );
   runApp(const MyApp());
 }
 

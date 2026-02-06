@@ -5,7 +5,6 @@ import 'package:clean_mvvm_pattern/view/search_product_view.dart';
 import 'package:clean_mvvm_pattern/view_model/auth/login_provider.dart';
 import 'package:clean_mvvm_pattern/view_model/auth/token_store_provider.dart';
 import 'package:flutter/material.dart';
-import '../sql_db/UserScreen.dart';
 import '../utils/custom/show_dialog.dart';
 import '../utils/custom/theme_app_color.dart';
 import 'package:provider/provider.dart';

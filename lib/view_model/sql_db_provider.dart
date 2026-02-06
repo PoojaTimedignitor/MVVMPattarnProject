@@ -1,6 +1,5 @@
-
-import 'package:clean_mvvm_pattern/sql_db/db_helper.dart';
 import 'package:flutter/cupertino.dart';
+import '../data_storage/sql_db/db_helper.dart';
 import '../model/me_model.dart';
 import '../model/user_model.dart';
 

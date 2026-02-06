@@ -6,9 +6,9 @@ import 'package:clean_mvvm_pattern/view_model/auth/token_store_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import '../../data_storage/sql_db/db_helper.dart';
 import '../../model/me_model.dart';
 import '../../repository/api_service_http.dart';
-import '../../sql_db/db_helper.dart';
 import '../../utils/routes/route_name.dart';
 import 'get_storage.dart';
 

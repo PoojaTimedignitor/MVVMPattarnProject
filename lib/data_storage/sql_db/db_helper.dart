@@ -5,7 +5,6 @@ import 'package:clean_mvvm_pattern/model/me_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import '../model/user_model.dart';
 
 class DBHelper {
   static final DBHelper instance = DBHelper._internal();
