@@ -1,6 +1,7 @@
 
 import 'dart:developer';
 import 'dart:io';
+import 'package:clean_mvvm_pattern/model/me_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -26,31 +27,47 @@ class DBHelper {
     log('Path : $path');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE users ADD COLUMN age INTEGER');
+    }
+  }
+
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        email TEXT
+        firstName TEXT,
+        lastName TEXT,
+        email TEXT,
+        gender TEXT,
+        age INTEGER,
+        image TEXT
       )
     ''');
   }
 
-  Future<int> addUser(UserModel user) async {
+  Future<int> addUser(MeModel user) async {
+  // Future<int> addUser(UserModel user) async {
     final db = await database;
-    return await db.insert('users', user.toMap());
+    return await db.insert('users', user.toDbMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    // return await db.insert('users', user.toMap());
   }
 
-  Future<List<UserModel>> getUsers() async {
+  Future<List<MeModel>> getUsers() async {
+  // Future<List<UserModel>> getUsers() async {
     final db = await database;
     final result = await db.query('users');
     log('Get User : $result');
-    return result.map((e) => UserModel.fromMap(e)).toList();
+    return result.map((e) => MeModel.fromDbMap(e)).toList();
+    // return result.map((e) => MeModel.fromMap(e)).toList();
   }
 
   Future<int> deleteUser(int id) async {
@@ -58,4 +75,14 @@ class DBHelper {
     log('delete User : $db');
     return await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
+
+
+
+
+
+
 }
+
+
+
+

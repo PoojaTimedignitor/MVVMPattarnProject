@@ -99,7 +99,8 @@ class DioClient {
 
             if(response.statusCode == 200){
               log('Me Profile successfully : ${response.data}');
-              return MeModel.fromJson(response.data);
+              return MeModel.fromDbMap(response.data);                                          /// DB 6-2-25
+              // return MeModel.fromJson(response.data);
             }else{
               log('Failed Me Profile : ${response.data}');
               return null;

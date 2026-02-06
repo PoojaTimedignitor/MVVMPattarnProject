@@ -77,7 +77,7 @@ class ApiService{
     }
     if(res.statusCode == 200){
       log('Me Api Response : $data');
-      return MeModel.fromJson(data);
+      return MeModel.fromDbMap(data);
     }
   }catch(e){
     log('Exception Error : $e');

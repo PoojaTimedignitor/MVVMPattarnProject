@@ -1,7 +1,14 @@
 
-  import 'package:flutter/material.dart';
+  import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ThemeProvider extends ChangeNotifier{
+
+  final _storage = GetStorage();
+
+  final _themeKey = 'isDarkMode';
 
    ThemeMode _themeMode = ThemeMode.light;
 
@@ -9,11 +16,29 @@ class ThemeProvider extends ChangeNotifier{
 
    bool get isDarkMode => _themeMode  == ThemeMode.dark;
 
+   ThemeProvider(){
+     _loadTheme();
+   }
+
    void setTheme() {
-     _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    // _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+     if (_themeMode == ThemeMode.light) {
+       _themeMode = ThemeMode.dark;
+       _storage.write(_themeKey, true);
+     } else {
+       _themeMode = ThemeMode.light;
+       _storage.write(_themeKey, false);
+     }
      notifyListeners();
    }
 
+
+   void _loadTheme(){
+     final isDark = _storage.read(_themeKey) ?? false;
+     _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+     log(' Theme Mode : $_themeMode');
+     notifyListeners();
+   }
 
 
    static final ThemeData lightTheme = ThemeData(

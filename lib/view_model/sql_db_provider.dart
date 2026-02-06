@@ -1,12 +1,14 @@
 
 import 'package:clean_mvvm_pattern/sql_db/db_helper.dart';
 import 'package:flutter/cupertino.dart';
+import '../model/me_model.dart';
 import '../model/user_model.dart';
 
 
 class SqlDbProvider extends ChangeNotifier{
 
-  List<UserModel> users = [];
+  List<MeModel> users = [];
+  // List<UserModel> users = [];
   bool isLoading = false;
 
   Future<void> fetchUser()async{
@@ -20,7 +22,8 @@ class SqlDbProvider extends ChangeNotifier{
   }
 
 
-   Future<void> addUser(UserModel user)async{
+   Future<void> addUser(MeModel user)async{
+   // Future<void> addUser(UserModel user)async{
     await DBHelper.instance.addUser(user);
     fetchUser();
    }

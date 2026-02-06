@@ -1,13 +1,14 @@
 
 import 'dart:developer';
-
 import 'package:clean_mvvm_pattern/repository/api_service_dio.dart';
 import 'package:clean_mvvm_pattern/utils/utils.dart';
 import 'package:clean_mvvm_pattern/view_model/auth/token_store_provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../../model/me_model.dart';
 import '../../repository/api_service_http.dart';
+import '../../sql_db/db_helper.dart';
 import '../../utils/routes/route_name.dart';
 import 'get_storage.dart';
 
@@ -101,20 +102,56 @@ class LoginProvider extends ChangeNotifier {
   Future<void> getMeApiData(BuildContext context)async{
     setLoading(true);
     notifyListeners();
-    // final result = await api.getMeApi(context);
-    final result = await apiDio.meProfile(context);
+    // final result = await apiDio.meProfile(context);
+    // setLoading(false);
+    // notifyListeners();
+    // log('Response Me APi : $result');
+    // if(result != null){
+    //   meModel = result;
+    //   log('Profile Data fetch : $meModel');
+    // }else{
+    //   meModel = null;
+    //   log('Profile Data fetch Faileddd');
+    // }
+
+    try {
+      final hasNet = await Connectivity().checkConnectivity() != ConnectivityResult.none;
+
+      if (hasNet) {
+        final result = await apiDio.meProfile(context);
+        log('Response Me API : $result');
+
+        if (result != null) {
+          meModel = result;
+
+          await DBHelper.instance.addUser(result);
+        } else {
+          meModel = (await DBHelper.instance.getUsers()).isNotEmpty
+              ? (await DBHelper.instance.getUsers()).first
+              : null;
+        }
+      } else {
+        meModel = (await DBHelper.instance.getUsers()).isNotEmpty
+            ? (await DBHelper.instance.getUsers()).first
+            : null;
+      }
+    } catch (e) {
+      log('Error Me API: $e');
+      meModel = (await DBHelper.instance.getUsers()).isNotEmpty
+          ? (await DBHelper.instance.getUsers()).first
+          : null;
+    }
+
     setLoading(false);
     notifyListeners();
-    log('Response Me APi : $result');
-    if(result != null){
-      meModel = result;
-      log('Profile Data fetch : $meModel');
-    }else{
-      meModel = null;
-      log('Profile Data fetch Faileddd');
-    }
   }
 
+
+  //
+  // Future<bool> hasInternet() async {
+  //   final result = await Connectivity().checkConnectivity();
+  //   return result != ConnectivityResult.none;
+  // }
 
 
 }
