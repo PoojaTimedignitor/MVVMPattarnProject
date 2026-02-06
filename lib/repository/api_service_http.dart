@@ -47,9 +47,9 @@ class ApiService{
   final url = Uri.parse(ApiEndPont.me);
   log('Profile Data getMeApi URL : $url');
 
-  final tokenProvider = Provider.of<TokenStoreProvider>(context, listen: false);
-    final accessToken =  await TokenStoreProvider.getToken();
-    // final accessToken =  await tokenProvider.getToken();
+   String? accessToken = TokenStore.getToken();
+
+  // final accessToken =  await tokenProvider.getToken();
     if(accessToken == null){
        log('AccessToken is missing');
        return null;
@@ -68,7 +68,7 @@ class ApiService{
     final data = jsonDecode(res.body);
     if (res.statusCode == 401) {
       debugPrint("Token - Token expired");
-      await TokenStoreProvider.clearToken();
+      await TokenStore.clearToken();
       // await tokenProvider.clearToken();
       if(context.mounted){
         Navigator.pushNamedAndRemoveUntil(context, RouteName.login, (route) => false);

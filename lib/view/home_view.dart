@@ -159,44 +159,6 @@ class _HomeViewState extends State<HomeView> {
 }
 
 
-
-
-// class LogoutClass {
-//    showLogoutDialog(BuildContext context) async {
-//     return showDialog(
-//         context: context,
-//         barrierDismissible: true,
-//         builder: (context) {
-//           return AlertDialog(
-//             title: const Text('Logout'),
-//             content: const Text('Are you sure want to logout ?'),
-//             actions: [
-//               TextButton(
-//                   onPressed: () {
-//                     Navigator.pop(context);
-//                   },
-//                   child: const Text('Cancel')),
-//               TextButton(
-//                   onPressed: () async {
-//                     final tokenStore =
-//                         Provider.of<TokenStoreProvider>(context, listen: false);
-//                     log('Clear Token : $tokenStore');
-//                     log('Successful Logout : $tokenStore');
-//                     await tokenStore.clearToken();
-//                     if (context.mounted) {
-//                       Navigator.pushNamedAndRemoveUntil(
-//                           context, RouteName.login, (route) => false);
-//                     }
-//                   },
-//                   child: const Text('Yes')),
-//             ],
-//           );
-//         }
-//         );
-//   }
-// }
-
-
 class LogoutClass {
   void showLogoutDialog(BuildContext context) {
     showCustomDialog(
@@ -208,11 +170,10 @@ class LogoutClass {
       confirmText: 'Yes',
       cancelText: 'Cancel',
       onConfirm: () async {
-        final tokenStore =
-        Provider.of<TokenStoreProvider>(context, listen: false);
+        // final tokenStore = Provider.of<TokenStoreProvider>(context, listen: false);
 
-        log('Clear Token : $tokenStore');
-        await TokenStoreProvider.clearToken();
+        log('Clear Token successful: ${TokenStore.clearToken()}');
+        await TokenStore.clearToken();
         // await tokenStore.clearToken();
 
         if (context.mounted) {

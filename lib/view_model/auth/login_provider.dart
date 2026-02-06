@@ -79,22 +79,13 @@ class LoginProvider extends ChangeNotifier {
       return;
     }
 
-    // if(context.mounted){
-    //   final tokenStore = Provider.of<TokenStoreProvider>(context, listen: false);
-    //   await tokenStore.saveToken(result['accessToken']);
-    //
-    //   log('Store Token fetchLoginData : $tokenStore');
-    // }
-
     if (context.mounted) {
-      final tokenStore = Provider.of<TokenStoreProvider>(context, listen: false);
-      await TokenStoreProvider.saveToken(
-      // await tokenStore.saveToken(
+      await TokenStore.saveToken(
         token: result['accessToken'],
         firstName: result['firstName'],
         lastName: result['lastName'],
       );
-      log('User data stored successfully : $tokenStore');
+      log('User data stored successfully');
     }
 
 

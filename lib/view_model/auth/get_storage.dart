@@ -72,7 +72,8 @@ import 'package:flutter/material.dart';
 
 
 
-class TokenStoreProvider extends ChangeNotifier {
+class TokenStore {
+// class TokenStoreProvider extends ChangeNotifier {
   static final GetStorage _storage = GetStorage();
 
   static const String _firstNameKey = 'firstName';

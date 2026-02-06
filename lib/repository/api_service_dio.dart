@@ -75,9 +75,9 @@ class DioClient {
   Future<MeModel?> meProfile(BuildContext context)async{
         String url = ApiEndPont.me;
 
-        final token = Provider.of<TokenStoreProvider>(context, listen: false);
-          final accessToken = await TokenStoreProvider.getToken();
-          // final accessToken = await token.getToken();
+          // final accessToken = await TokenStoreProvider.getToken();
+        String? accessToken = TokenStore.getToken();
+        // final accessToken = await token.getToken();
 
         if(accessToken == null){
           log('AccessToken is missing');
@@ -107,7 +107,7 @@ class DioClient {
         }on DioException catch(e){
           if(e.response?.statusCode == 401){
             debugPrint("Token - Token expired Dio");
-            await TokenStoreProvider.clearToken();
+            await TokenStore.clearToken();
             // await token.clearToken();
             if(context.mounted){
               Navigator.pushNamedAndRemoveUntil(context, RouteName.login, (route) => false);
