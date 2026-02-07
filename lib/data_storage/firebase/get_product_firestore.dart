@@ -65,6 +65,7 @@ class GetProductFirestore {
   Stream<List<Product>> getProductsData(ProductDataProvider provider) {
     return _dbFirestore
         .collection('products')
+        .orderBy('id')
         .snapshots()
         .map((snapshot) {
       if (snapshot.docs.isNotEmpty) {
