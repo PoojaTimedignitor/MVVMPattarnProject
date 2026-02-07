@@ -14,15 +14,23 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 
+import 'data_storage/firebase/get_product_firestore.dart';
+import 'firebase_options.dart';
+
+
 
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   DioClient.setupInterceptors();
-  await Firebase.initializeApp();
+  //await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FirebaseFirestore.instance.settings = const Settings(                                                       /// offline data store
     persistenceEnabled: true,
   );
+  FirestoreNetworkManager().startListening();
   runApp(const MyApp());
 }
 

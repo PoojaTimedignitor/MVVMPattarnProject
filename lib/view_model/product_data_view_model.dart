@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:clean_mvvm_pattern/repository/api_service_dio.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
+import '../data_storage/firebase/get_product_firestore.dart';
 import '../model/get_all_product_model.dart';
 import '../repository/api_service_http.dart';
 import '../utils/utils.dart';
@@ -13,8 +15,11 @@ class ProductDataProvider extends ChangeNotifier{
 
   ApiService api = ApiService();
   DioClient apiDio = DioClient();
+  final GetProductFirestore _firestoreService = GetProductFirestore();                                      /// Firebase
 
   bool _loading = false;
+  bool _hasFetchedOnce = false;
+  bool _cacheReady = false;
   String? _selectedSort;
   List<Product>? _originalList = [];
 
@@ -44,9 +49,16 @@ class ProductDataProvider extends ChangeNotifier{
 
 
  bool get loading => _loading;
+  bool get hasFetchedOnce => _hasFetchedOnce;
+  bool get cacheReady => _cacheReady;
   Map<String, dynamic> get data => _data;
   String? get selectedSort => _selectedSort;
   List<Product>? get originalList => _originalList;
+
+
+
+  Stream<List<Product>> get productsStream => _firestoreService.getProductsData(this);                                /// firebase
+
 
 
   final Map<String, List<String>> sortOptions = {
@@ -80,13 +92,39 @@ class ProductDataProvider extends ChangeNotifier{
      notifyListeners();
     }
 
+  void markCacheReady() {
+    if (!_cacheReady) {
+      _cacheReady = true;
+      notifyListeners();
+    }
+  }
+
     Future<void> fetchAllProductList()async {
-       final result = await apiDio.getAllProduct();
-       // final result = await api.getAllProductList();
-       allProductModel = result;
-       _originalList = List<Product>.from(result?.products ?? []);
-       notifyListeners();
-       log('result All Product : $allProductModel');
+      try{
+        if (_hasFetchedOnce) return;
+
+        final connectivity = await Connectivity().checkConnectivity();
+        if (connectivity == ConnectivityResult.none) {
+          log('No internet → using Firestore offline data');
+          return;
+        }
+
+        _hasFetchedOnce = true;
+
+        final result = await apiDio.getAllProduct();
+
+        if(result != null){
+          await _firestoreService.saveApiDataToFirestore(result);                               /// firebase store data
+          allProductModel = result;
+          _originalList = List<Product>.from(result.products);
+          notifyListeners();
+          log(' get Products saved to Firestore: ${result.products.length}');
+          log('result All Product : $allProductModel');
+        }
+      }catch(e){
+        log('Fetch product error: $e');
+      }
+
     }
 
 
@@ -152,7 +190,7 @@ class ProductDataProvider extends ChangeNotifier{
         if(order == 'Z-A') list = list.reversed.toList();
       }
       if(type == "Price"){
-        list.sort((a, b) => a.price.compareTo (b.price));
+        list.sort((a, b) => (a.price ?? 0).compareTo (b.price ?? 0));
         if(order == "High to Low") list = list.reversed.toList();
       }
       _allProductModel?.products = list;
