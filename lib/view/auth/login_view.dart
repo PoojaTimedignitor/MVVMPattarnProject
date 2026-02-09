@@ -1,5 +1,6 @@
 import 'package:clean_mvvm_pattern/utils/custom/round_button.dart';
 import 'package:clean_mvvm_pattern/view_model/auth/login_provider.dart';
+import 'package:clean_mvvm_pattern/view_model/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../utils/custom/text_form_field.dart';
@@ -14,6 +15,8 @@ class LoginView extends StatelessWidget {
 
     ValueNotifier<bool> obSurePassword = ValueNotifier<bool>(true);
 
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     return Scaffold(
       body: Center(
         child: Consumer<LoginProvider>(
@@ -23,7 +26,7 @@ class LoginView extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 2, color: AppColor.secondaryColors)
+                 border: Border.all(width: 2, color: themeProvider.isDarkMode ? AppColor.primaryColors : AppColor.secondaryColors)
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -31,17 +34,6 @@ class LoginView extends StatelessWidget {
                   const Text('Log in', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
 
                   const SizedBox(height: 10,),
-
-                  // TextFormField(
-                  //   controller: provider.usernameController,
-                  //   decoration: InputDecoration(
-                  //       hintText: 'Enter Username',
-                  //       hintStyle: TextStyle(color: AppColor.secondaryColors.withOpacity(0.5)),
-                  //       border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(10)
-                  //       )
-                  //   ),
-                  // ),
 
                   CustomTextField(
                     controller: provider.usernameController,
@@ -64,26 +56,7 @@ class LoginView extends StatelessWidget {
                           child: Icon(obSure ? Icons.visibility_off : Icons.visibility),
                         ),
                       );
-
-                      //   TextFormField(
-                      //   controller: provider.passwordController,
-                      //   obscureText: obSure,
-                      //   obscuringCharacter: '*',
-                      //   decoration: InputDecoration(
-                      //       hintText: 'Enter Password',
-                      //       suffixIcon: InkWell(
-                      //           onTap: (){
-                      //             obSurePassword.value = !obSurePassword.value;
-                      //           },
-                      //           child: Icon(obSure ? Icons.visibility_off : Icons.visibility)
-                      //       ),
-                      //       hintStyle: TextStyle(color: AppColor.secondaryColors.withOpacity(0.5)),
-                      //       border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.circular(10),
-                      //       )
-                      //   ),
-                      // );
-                    },
+                      },
                   ),
 
                   const SizedBox(height: 20,),
@@ -101,11 +74,14 @@ class LoginView extends StatelessWidget {
                       Navigator.pushNamed(context, RouteName.register);
                     },
                     child: RichText(
-                        text: const TextSpan(
-                            text: "Don't have account?",style: TextStyle(color: AppColor.secondaryColors),
-                            children: [
+                        text:  TextSpan(
+                            text: "Don't have account?",
+                            style: TextStyle(color: themeProvider.isDarkMode ? AppColor.primaryColors : AppColor.secondaryColors),
+                            children: const [
                               TextSpan(
-                                  text: '  Register', style: TextStyle(color: AppColor.tertiaryColors, fontWeight: FontWeight.bold)
+                                  text: '  Register', style: TextStyle(
+                                 color: AppColor.tertiaryColors,
+                                  fontWeight: FontWeight.bold)
                               )
                             ]
                         )

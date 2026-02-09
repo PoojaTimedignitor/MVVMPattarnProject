@@ -88,26 +88,70 @@ class SearchProductView extends StatelessWidget {
 
                 Expanded(
                   child: ListView.builder(
-                      itemCount: provider.allProductModel?.products.length,
-                      itemBuilder: (context, index){
-                        final data = provider.allProductModel?.products[index];
-                        return Card(
-                          elevation: 6,
-                          child: ListTile(
-                            leading: data?.thumbnail != null &&
-                                data!.thumbnail!.isNotEmpty
-                                ? Image.network(
-                              data.thumbnail ?? '',
-                              errorBuilder: (_, e, ___) =>
-                                  Image.asset("assets/img.png"),
-                            )
-                                : Image.asset("assets/img.png"),
-                            title: Text(data?.title ?? ''),
-                            subtitle: Text("₹${data?.price}"),
-                          ),
-                        );
-                      }
-                  ),
+                    itemCount: provider.allProductModel?.products.length,
+                   // itemCount: products.length,
+                    itemBuilder: (context, index){
+                      final data = provider.allProductModel?.products[index];
+                     // final data = products[index];
+                      return Card(
+                        elevation: 6,
+                        child: ListTile(
+                          leading: data?.thumbnail != null &&
+                              data!.thumbnail!.isNotEmpty
+                              ? Image.network(
+                            data.thumbnail ?? '',
+                            errorBuilder: (_, e, ___) =>
+                                Image.asset("assets/img.png"),
+                          )
+                              : Image.asset("assets/img.png"),
+                          title: Text(data?.title ?? ''),
+                          subtitle: Text("₹${data?.price}"),
+                        ),
+                      );
+                    }
+                )
+
+
+                  // StreamBuilder(
+                  //   // stream: null,
+                  //   // builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  //   stream: provider.productsStream,
+                  //   builder: (context, snapshot) {
+                  //     if (!provider.cacheReady) {
+                  //       return const Center(child: CircularProgressIndicator());
+                  //     }
+                  //
+                  //     if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  //       return const Center(child: Text("No products found"));
+                  //     }
+                  //
+                  //     final products = snapshot.data!;
+                  //
+                  //     return ListView.builder(
+                  //         // itemCount: provider.allProductModel?.products.length,
+                  //         itemCount: products.length,
+                  //         itemBuilder: (context, index){
+                  //           // final data = provider.allProductModel?.products[index];
+                  //           final data = products[index];
+                  //           return Card(
+                  //             elevation: 6,
+                  //             child: ListTile(
+                  //               leading: data.thumbnail != null &&
+                  //                   data.thumbnail!.isNotEmpty
+                  //                   ? Image.network(
+                  //                 data.thumbnail ?? '',
+                  //                 errorBuilder: (_, e, ___) =>
+                  //                     Image.asset("assets/img.png"),
+                  //               )
+                  //                   : Image.asset("assets/img.png"),
+                  //               title: Text(data.title ?? ''),
+                  //               subtitle: Text("₹${data.price}"),
+                  //             ),
+                  //           );
+                  //         }
+                  //     );
+                  //   },
+                  // ),
                 ),
               ],
             ),
