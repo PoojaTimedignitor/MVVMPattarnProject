@@ -6,6 +6,8 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../model/product_db_model.dart';
+
 class DBHelper {
   static final DBHelper instance = DBHelper._internal();
   static Database? _database;
@@ -26,7 +28,7 @@ class DBHelper {
     log('Path : $path');
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -35,6 +37,17 @@ class DBHelper {
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute('ALTER TABLE users ADD COLUMN age INTEGER');
+    }
+
+    if (oldVersion < 3) {
+      await db.execute('''
+      CREATE TABLE products(
+        id INTEGER PRIMARY KEY,
+        title TEXT,
+        price REAL,
+        thumbnail TEXT
+      )
+    ''');
     }
   }
 
@@ -51,22 +64,28 @@ class DBHelper {
         image TEXT
       )
     ''');
+
+    /// Add new Product store  10-2-26
+    await db.execute('''
+       CREATE TABLE products(
+       id INTEGER PRIMARY KEY,
+       title TEXT,
+       price REAL,
+       thumbnail TEXT
+       )
+    ''');
   }
 
   Future<int> addUser(MeModel user) async {
-  // Future<int> addUser(UserModel user) async {
     final db = await database;
     return await db.insert('users', user.toDbMap(), conflictAlgorithm: ConflictAlgorithm.replace);
-    // return await db.insert('users', user.toMap());
   }
 
   Future<List<MeModel>> getUsers() async {
-  // Future<List<UserModel>> getUsers() async {
     final db = await database;
     final result = await db.query('users');
     log('Get User : $result');
     return result.map((e) => MeModel.fromDbMap(e)).toList();
-    // return result.map((e) => MeModel.fromMap(e)).toList();
   }
 
   Future<int> deleteUser(int id) async {
@@ -77,6 +96,29 @@ class DBHelper {
 
 
 
+  /// Add new Product store  10-2-26
+  Future<void> insertProduct(List<ProductDbModel> products)async{
+  // Future<int> insertProduct(List<ProductDbModel> products)async{
+    final db = await database;
+    final batch = db.batch();
+    for (final product in products) {
+      batch.insert(
+        'products',
+        product.toDbMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+
+    await batch.commit(noResult: true);
+    //return await db.insert('products', products.toDbMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+
+  Future<List<ProductDbModel>> fetchProducts()async{
+     final db = await database;
+     final result = await db.query('products');
+     return result.map((e) => ProductDbModel.fromDbMap(e)).toList();
+  }
 
 
 

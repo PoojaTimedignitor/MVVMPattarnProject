@@ -21,7 +21,7 @@ class _GetProductListState extends State<GetProductList> {
     // });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProductDataProvider>().fetchAllProductList();
+      context.read<ProductDataProvider>().fetchAllProductList(context);
     });
     super.initState();
   }

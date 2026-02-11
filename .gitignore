@@ -31,6 +31,15 @@ migrate_working_dir/
 .pub/
 /build/
 
+# APK files                     add 10-2-26
+android/app/build/
+android/app/build/outputs/
+android/app/build/outputs/flutter-apk/
+*.apk
+clean_mvvm_pattern_android/
+android/
+
+
 # Symbolication related
 app.*.symbols
 

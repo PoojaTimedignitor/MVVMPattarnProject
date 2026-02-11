@@ -11,7 +11,7 @@ class SearchProductView extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductDataProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      provider.fetchAllProductList();
+      provider.fetchAllProductList(context);
       provider.searchController.clear();
       provider.clearSort();
     });
@@ -24,27 +24,34 @@ class SearchProductView extends StatelessWidget {
       ),
       body: Consumer<ProductDataProvider>(
         builder: (context, provider, child) {
-          return  Padding(
+          return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 TextFormField(
                   controller: provider.searchController,
-                  onChanged: (query){
-                    provider.fetchSearchData(query);
+                  onChanged: (query) {
+                    provider.fetchSearchData(query, context);
                   },
                   decoration: InputDecoration(
                       hintText: 'Search Product..',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      suffixIcon: provider.searchController.text.isNotEmpty ? IconButton(onPressed: (){provider.searchController.clear();}, icon: const Icon(Icons.clear)) : null
-                  ),
+                      suffixIcon: provider.searchController.text.isNotEmpty
+                          ? IconButton(
+                              onPressed: () {
+                                provider.searchController.clear();
+                              },
+                              icon: const Icon(Icons.clear))
+                          : null),
                 ),
-
-                const SizedBox(height: 10,),
-
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   children: [
                     SizedBox(
@@ -57,26 +64,28 @@ class SearchProductView extends StatelessWidget {
                               hint: const Row(
                                 children: [
                                   Icon(Icons.sort),
-                                  SizedBox(width: 20,),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
                                   Text('Sort by')
                                 ],
                               ),
                               underline: const SizedBox(),
                               isExpanded: true,
-                              items: provider.sortOptions.entries.expand((entry)=> entry.value.map((order){
-                                final group = entry.key;
-                                return DropdownMenuItem(
-                                    value: "$group|$order",
-                                    child: Text("$group : $order")
-                                );
-                              })).toList(),
-                              onChanged: (value){
-                                if(value == null) return;
+                              items: provider.sortOptions.entries
+                                  .expand((entry) => entry.value.map((order) {
+                                        final group = entry.key;
+                                        return DropdownMenuItem(
+                                            value: "$group|$order",
+                                            child: Text("$group : $order"));
+                                      }))
+                                  .toList(),
+                              onChanged: (value) {
+                                if (value == null) return;
                                 provider.setSelectedSort(value);
                                 final parts = value.split("|");
                                 provider.sortProduct(parts[0], parts[1]);
-                              }
-                          ),
+                              }),
                         ),
                       ),
                       //   },
@@ -84,75 +93,30 @@ class SearchProductView extends StatelessWidget {
                     ),
                   ],
                 ),
-
-
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: provider.allProductModel?.products.length,
-                   // itemCount: products.length,
-                    itemBuilder: (context, index){
-                      final data = provider.allProductModel?.products[index];
-                     // final data = products[index];
-                      return Card(
-                        elevation: 6,
-                        child: ListTile(
-                          leading: data?.thumbnail != null &&
-                              data!.thumbnail!.isNotEmpty
-                              ? Image.network(
-                            data.thumbnail ?? '',
-                            errorBuilder: (_, e, ___) =>
-                                Image.asset("assets/img.png"),
-                          )
-                              : Image.asset("assets/img.png"),
-                          title: Text(data?.title ?? ''),
-                          subtitle: Text("₹${data?.price}"),
-                        ),
-                      );
-                    }
-                )
-
-
-                  // StreamBuilder(
-                  //   // stream: null,
-                  //   // builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  //   stream: provider.productsStream,
-                  //   builder: (context, snapshot) {
-                  //     if (!provider.cacheReady) {
-                  //       return const Center(child: CircularProgressIndicator());
-                  //     }
-                  //
-                  //     if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  //       return const Center(child: Text("No products found"));
-                  //     }
-                  //
-                  //     final products = snapshot.data!;
-                  //
-                  //     return ListView.builder(
-                  //         // itemCount: provider.allProductModel?.products.length,
-                  //         itemCount: products.length,
-                  //         itemBuilder: (context, index){
-                  //           // final data = provider.allProductModel?.products[index];
-                  //           final data = products[index];
-                  //           return Card(
-                  //             elevation: 6,
-                  //             child: ListTile(
-                  //               leading: data.thumbnail != null &&
-                  //                   data.thumbnail!.isNotEmpty
-                  //                   ? Image.network(
-                  //                 data.thumbnail ?? '',
-                  //                 errorBuilder: (_, e, ___) =>
-                  //                     Image.asset("assets/img.png"),
-                  //               )
-                  //                   : Image.asset("assets/img.png"),
-                  //               title: Text(data.title ?? ''),
-                  //               subtitle: Text("₹${data.price}"),
-                  //             ),
-                  //           );
-                  //         }
-                  //     );
-                  //   },
-                  // ),
-                ),
+                    child: ListView.builder(
+                        itemCount: provider.allProductModel?.products.length,
+                        // itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          final data =
+                              provider.allProductModel?.products[index];
+                          // final data = products[index];
+                          return Card(
+                            elevation: 6,
+                            child: ListTile(
+                              leading: data?.thumbnail != null &&
+                                      data!.thumbnail!.isNotEmpty
+                                  ? Image.network(
+                                      data.thumbnail ?? '',
+                                      errorBuilder: (_, e, ___) =>
+                                          Image.asset("assets/img.png"),
+                                    )
+                                  : Image.asset("assets/img.png"),
+                              title: Text(data?.title ?? ''),
+                              subtitle: Text("₹${data?.price}"),
+                            ),
+                          );
+                        })),
               ],
             ),
           );
@@ -161,3 +125,46 @@ class SearchProductView extends StatelessWidget {
     );
   }
 }
+
+/// user firestore
+
+// StreamBuilder(
+//   // stream: null,
+//   // builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+//   stream: provider.productsStream,
+//   builder: (context, snapshot) {
+//     if (!provider.cacheReady) {
+//       return const Center(child: CircularProgressIndicator());
+//     }
+//
+//     if (!snapshot.hasData || snapshot.data!.isEmpty) {
+//       return const Center(child: Text("No products found"));
+//     }
+//
+//     final products = snapshot.data!;
+//
+//     return ListView.builder(
+//         // itemCount: provider.allProductModel?.products.length,
+//         itemCount: products.length,
+//         itemBuilder: (context, index){
+//           // final data = provider.allProductModel?.products[index];
+//           final data = products[index];
+//           return Card(
+//             elevation: 6,
+//             child: ListTile(
+//               leading: data.thumbnail != null &&
+//                   data.thumbnail!.isNotEmpty
+//                   ? Image.network(
+//                 data.thumbnail ?? '',
+//                 errorBuilder: (_, e, ___) =>
+//                     Image.asset("assets/img.png"),
+//               )
+//                   : Image.asset("assets/img.png"),
+//               title: Text(data.title ?? ''),
+//               subtitle: Text("₹${data.price}"),
+//             ),
+//           );
+//         }
+//     );
+//   },
+// ),

@@ -1,9 +1,12 @@
 import 'dart:developer';
 import 'package:clean_mvvm_pattern/repository/api_service_dio.dart';
+import 'package:clean_mvvm_pattern/view_model/sql_db_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import '../data_storage/firebase/get_product_firestore.dart';
 import '../model/get_all_product_model.dart';
+import '../model/product_db_model.dart';
 import '../repository/api_service_http.dart';
 import '../utils/utils.dart';
 
@@ -99,36 +102,98 @@ class ProductDataProvider extends ChangeNotifier{
     }
   }
 
-    Future<void> fetchAllProductList()async {
-      try{
-        if (_hasFetchedOnce) return;
 
-        final connectivity = await Connectivity().checkConnectivity();
-        if (connectivity == ConnectivityResult.none) {
-          log('No internet → using Firestore offline data');
-          return;
-        }
+    // Future<void> fetchAllProductList()async {
+    //   try{
+    //     if (_hasFetchedOnce) return;
+    //
+    //     final connectivity = await Connectivity().checkConnectivity();
+    //     if (connectivity == ConnectivityResult.none) {
+    //       log('No internet → using Firestore offline data');
+    //       return;
+    //     }
+    //
+    //     _hasFetchedOnce = true;
+    //
+    //     final result = await apiDio.getAllProduct();
+    //
+    //     if(result != null){
+    //       await _firestoreService.saveApiDataToFirestore(result);                               /// firebase store data
+    //       allProductModel = result;
+    //       _originalList = List<Product>.from(result.products);
+    //       notifyListeners();
+    //       log(' get Products saved to Firestore: ${result.products.length}');
+    //       log('result All Product : $allProductModel');
+    //     }
+    //   }catch(e){
+    //     log('Fetch product error: $e');
+    //   }
+    //
+    // }
 
-        _hasFetchedOnce = true;
+  Future<void> fetchAllProductList(BuildContext context) async {
+    try {
+      ///  LOAD FROM SQLITE FIRST (ALWAYS)
+      final sqlDbProvider = context.read<SqlDbProvider>();
+      await sqlDbProvider.fetchProductData();
 
-        final result = await apiDio.getAllProduct();
+      if (sqlDbProvider.product.isNotEmpty) {
+        allProductModel = GetAllProductModel(
+          products: sqlDbProvider.product
+              .map((e) => e.toProduct())
+              .toList(),
+          total: sqlDbProvider.product.length,
+          skip: 0,
+          limit: sqlDbProvider.product.length,
+        );
 
-        if(result != null){
-          await _firestoreService.saveApiDataToFirestore(result);                               /// firebase store data
-          allProductModel = result;
-          _originalList = List<Product>.from(result.products);
-          notifyListeners();
-          log(' get Products saved to Firestore: ${result.products.length}');
-          log('result All Product : $allProductModel');
-        }
-      }catch(e){
-        log('Fetch product error: $e');
+        _originalList = List<Product>.from(allProductModel!.products);
+        notifyListeners();
       }
 
+      /// CHECK INTERNET
+      final connectivity = await Connectivity().checkConnectivity();
+      if (connectivity == ConnectivityResult.none) {
+        log('No internet → using SQLite cached data');
+        return;
+      }
+
+      ///  AVOID MULTIPLE API CALLS
+      if (_hasFetchedOnce) return;
+      _hasFetchedOnce = true;
+
+      /// FETCH FROM API
+      final result = await apiDio.getAllProduct();
+      if (result == null) return;
+
+      ///  SAVE FULL DATA TO FIRESTORE
+      await _firestoreService.saveApiDataToFirestore(result);
+
+      /// SAVE MINIMAL DATA TO SQLITE
+      final dbProducts = result.products.map((p) {
+        return ProductDbModel(
+          id: p.id ?? 0,
+          title: p.title ?? '',
+          price: p.price ?? 0,
+          thumbnail: p.thumbnail ?? '',
+        );
+      }).toList();
+
+      await sqlDbProvider.addProducts(dbProducts);
+
+      ///  UPDATE UI WITH API DATA
+      allProductModel = result;
+      _originalList = List<Product>.from(result.products);
+      notifyListeners();
+
+      log('Products synced → API → Firestore → SQLite');
+    } catch (e) {
+      log('Fetch product error: $e');
     }
+  }
 
 
-    Future<void> fetchSingleData()async{
+  Future<void> fetchSingleData()async{
       final response = await api.getSingleProduct();
       if(response != null){
              data = response;
@@ -164,9 +229,9 @@ class ProductDataProvider extends ChangeNotifier{
   }
 
 
-    Future<void> fetchSearchData(String query)async{
+    Future<void> fetchSearchData(String query, BuildContext context)async{
       if(query.isEmpty){
-        await fetchAllProductList();
+        await fetchAllProductList(context);
         return;
       }
       final result = await apiDio.searchProductList(query);
