@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import '../model/get_all_product_model.dart';
 import '../utils/custom/theme_app_color.dart';
 import '../view_model/product_data_view_model.dart';
@@ -38,21 +39,68 @@ class _GetProductListState extends State<GetProductList> {
       body: Padding(
           padding: const EdgeInsets.all(10),
           child: Consumer<ProductDataProvider>(
-            builder: (context, value, child) {
+            builder: (context, provider, child) {
               return StreamBuilder<List<Product>>(
-                stream: value.productsStream,
+                stream: provider.productsStream,
                 builder: (context, snapshot) {
 
-                  // if (!snapshot.hasData && snapshot.connectionState == ConnectionState.waiting) {
-                  //   return const Center(child: CircularProgressIndicator());
-                  // }
-
-                  if (!value.cacheReady) {
+                  if (!snapshot.hasData && snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
+
+                    /// Shimmer
+                  // if (!provider.cacheReady ||
+                  //     snapshot.connectionState == ConnectionState.waiting ||
+                  //     (provider.loading ?? false)) {
+                  //   return ListView.builder(
+                  //     itemCount: 6,
+                  //     itemBuilder: (context, index) {
+                  //       return Shimmer.fromColors(
+                  //         baseColor: Colors.grey.shade300,
+                  //         highlightColor: Colors.grey.shade100,
+                  //         child: Card(
+                  //           elevation: 3,
+                  //           margin: const EdgeInsets.only(bottom: 16),
+                  //           child: Padding(
+                  //             padding: const EdgeInsets.all(12),
+                  //             child: Column(
+                  //               crossAxisAlignment: CrossAxisAlignment.start,
+                  //               children: [
+                  //                 Row(
+                  //                   children: [
+                  //                     Container(width: 40, height: 40, color: Colors.white),
+                  //                     const SizedBox(width: 12),
+                  //                     Container(width: 80, height: 16, color: Colors.white),
+                  //                   ],
+                  //                 ),
+                  //                 const SizedBox(height: 12),
+                  //                 Container(
+                  //                   width: double.infinity,
+                  //                   height: 180,
+                  //                   color: Colors.white,
+                  //                 ),
+                  //                 const SizedBox(height: 12),
+                  //                 Container(width: 140, height: 16, color: Colors.white),
+                  //                 const SizedBox(height: 8),
+                  //                 Container(width: 200, height: 16, color: Colors.white),
+                  //                 const SizedBox(height: 8),
+                  //                 Container(width: 120, height: 16, color: Colors.white),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       );
+                  //     },
+                  //   );
+                  // }
+
+                  // if (!provider.cacheReady) {
+                  //   return const Center(child: CircularProgressIndicator());
+                  // }
+
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text("No products found"));
+                   return const Center(child: Text("No products found"));
                   }
 
                     final products = snapshot.data!;
@@ -136,7 +184,8 @@ class _GetProductListState extends State<GetProductList> {
 
               );
             },
-          )),
+          )
+      ),
     );
   }
 }
